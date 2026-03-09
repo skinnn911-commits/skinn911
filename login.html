@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Login | Garden City High School</title>
+    <link rel="stylesheet" href="login.css">
+</head>
+<body>
+    <header>
+        <img src="log0.jpg" alt="Site logo" width="120" height="100">
+        <ul>
+            <li><a href="home.html"><h6>Home</h6></a></li>
+            <li><a href="services.html"><h6>Services</h6></a></li>
+            <li><a href="Careers.html"><h6>Careers</h6></a></li>
+            <li><a href="products.html"><h6>Products</h6></a></li>
+            <li><a href="blogs.html"><h6>Blog</h6></a></li>
+            <li><a href="about.html"><h6>Locations</h6></a></li>
+            <li><a href="membership.html"><h6>Membership</h6></a></li>
+            <li><a href="login.html"><h6>Testimonials</h6></a></li>
+        </ul>
+        <button class="book-btn" onclick="window.location.href='booking.html'">Book Now</button>
+    </header>
+    <main>
+        <section class="about-hero">
+            <h2 class="animate-pop">Testimonials & Bulletin Board</h2>
+            <p>Read what our community is saying — and add your own experience.</p>
+        </section>
+
+        <hr class="garden-divider">
+
+        <section class="bulletin-container">
+            <div class="bulletin-left">
+                <h3>Post your experience </h3>
+                <form id="postForm" class="post-form">
+                    <label for="ann-title">Name</label>
+                    <input type="text" id="ann-title" name="title" placeholder="Person's name or headline" required>
+
+                    <label for="ann-date">Date</label>
+                    <input type="date" id="ann-date" name="date">
+
+                    <label for="ann-message">Message</label>
+                    <textarea id="ann-message" name="message" rows="5" placeholder="Write the testimonial here..." required></textarea>
+
+                    <button type="submit" class="btn-primary">Post Testimonial</button>
+                    <button type="button" id="clearAll" class="btn-secondary">Clear All</button>
+                </form>
+            </div>
+
+            <div class="bulletin-right">
+                <h3>What People Are Saying</h3>
+                <div id="announcements" class="announcements-list">
+
+                </div>
+            </div>
+        </section>
+
+        <script>
+            (function(){
+                const storageKey = 'gch_announcements_v1';
+                const listEl = document.getElementById('announcements');
+                const form = document.getElementById('postForm');
+                const clearBtn = document.getElementById('clearAll');
+
+                function load() {
+                    try {
+                        return JSON.parse(localStorage.getItem(storageKey)) || [];
+                    } catch (e) { return []; }
+                }
+
+                function save(items) {
+                    localStorage.setItem(storageKey, JSON.stringify(items));
+                }
+
+                function render() {
+                    const items = load();
+                    if (!listEl) return;
+                    listEl.innerHTML = '';
+                    if (items.length === 0) {
+                        listEl.innerHTML = '<p class="muted">No testimonials yet.</p>';
+                        return;
+                    }
+                    items.slice().reverse().forEach((it, idx) => {
+                        const card = document.createElement('article');
+                        card.className = 'announcement-card testimonial-card';
+                        const date = it.date ? '<time>' + it.date + '</time>' : '';
+                        let imageHtml = '';
+                        if (it.image) {
+                            imageHtml = '<div class="testimonial-img-wrap"><img src="' + escapeHtml(it.image) + '" alt="' + escapeHtml(it.title) + '"/></div>';
+                        }
+                        card.innerHTML = imageHtml + '<h4>' + escapeHtml(it.title) + '</h4>' + date + '<p>' + escapeHtml(it.message) + '</p>';
+                        listEl.appendChild(card);
+                    });
+                }
+
+                function escapeHtml(s) {
+                    return String(s).replace(/[&<>"']/g, function(c){
+                        return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[c];
+                    });
+                }
+
+                if (form) {
+                    form.addEventListener('submit', function(e){
+                        e.preventDefault();
+                        const title = document.getElementById('ann-title').value.trim();
+                        const date = document.getElementById('ann-date').value;
+                        const image = document.getElementById('ann-image').value.trim();
+                        const message = document.getElementById('ann-message').value.trim();
+                        if (!title || !message) return;
+                        const items = load();
+                        items.push({ title: title, date: date, image: image, message: message, created: Date.now() });
+                        save(items);
+                        form.reset();
+                        render();
+                    });
+                }
+
+                if (clearBtn) {
+                    clearBtn.addEventListener('click', function(){
+                        if (!confirm('Clear all announcements?')) return;
+                        localStorage.removeItem(storageKey);
+                        render();
+                    });
+                }
+
+                (function ensureSample(){
+                    const items = load();
+                    if (items.length === 0) {
+                        items.push({ title: 'Welcome Back!', date: '', image: '', message: 'Welcome to the Garden City student announcements board. Check here daily for updates.', created: Date.now() });
+                        items.push({ title: 'Miracles', date: '2026-02-17', image: 'https://eneevaskins.com/face-reality', message: 'After speaking to Skin 911s team i realized the importance of proper skincare before going to my appointment, After my appointment, I felt much more confident and comfortable with my skin. It was glowier, smoother and im just happy with the results.', created: Date.now() });
+                        save(items);
+                    }
+                })();
+
+                render();
+            })();
+        </script>
+
+        <footer>
+            <div class="footer-container">
+                
+                <div class="footer-column">
+                    <h3>Sign up for texts & emails</h3>
+                    <form class="footer-email-form">
+                        <input type="email" placeholder="Email" required />
+                        <button type="submit" aria-label="Subscribe">→</button>
+                    </form>
+                    <div class="footer-social">
+                        <a href="https://www.instagram.com/skin911._?igsh=a3pnamYya2lzdG5n" target="_blank" aria-label="Instagram"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgdmlld0JveD0iMCAwIDQwIDQwIj48Y2lyY2xlIGN4PSIyMCIgY3k9IjIwIiByPSIxOCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSIyIi8+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMTIiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMiIvPjxjaXJjbGUgY3g9IjIwIiBjeT0iMjAiIHI9IjYiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMiIvPjxjaXJjbGUgY3g9IjI4IiBjeT0iMTIiIHI9IjEuNSIgZmlsbD0id2hpdGUiLz48L3N2Zz4=" alt="Instagram" width="40" height="40" /></a>
+                    </div>
+                </div>
+
+               
+                <div class="footer-column">
+                    <h3>INFO</h3>
+                    <ul>
+                        <li><a href="services.html">Services</a></li>
+                        <li><a href="about.html">Locations</a></li>
+                        <li><a href="Careers.html">Careers</a></li>
+                    </ul>
+                </div>
+
+                
+                <div class="footer-column">
+                    <h3>OUR HOURS</h3>
+                    <ul class="hours-list">
+                        <li><strong>Sunday:</strong> 10 AM - 6 PM</li>
+                        <li><strong>Monday:</strong> 10 AM - 6 PM</li>
+                        <li><strong>Tuesday:</strong> 10 AM - 6 PM</li>
+                        <li><strong>Wednesday:</strong> 9 AM - 8 PM</li>
+                        <li><strong>Thursday:</strong> 9 AM - 8 PM</li>
+                        <li><strong>Friday:</strong> 9 AM - 8 PM</li>
+                        <li><strong>Saturday:</strong> 9 AM - 6 PM</li>
+                    </ul>
+                </div>
+
+                
+                <div class="footer-column">
+                    <h3>Our Location</h3>
+                    <ul class="location-list">
+                        <li>Orange Walk: <span class="location-number">(501) 610-0000</span></li>
+                        <li>The Point, Placencia: <span class="location-number">(501) 610-1111</span></li>
+                        <li>North End, Hopkins: <span class="location-number">(501) 610-2222</span></li>
+                    </ul>
+                </div>
+            </div>
+
+            
+            <div class="footer-bottom">
+                <p>&copy; 2024 Skin 911. All rights reserved.</p>
+            </div>
+        </footer> 
+</body>
+</html>
+
+   
+
