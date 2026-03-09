@@ -126,8 +126,7 @@
                 (function ensureSample(){
                     const items = load();
                     if (items.length === 0) {
-                        items.push({ title: 'Welcome Back!', date: '', image: '', message: 'Welcome to the Garden City student announcements board. Check here daily for updates.', created: Date.now() });
-                        items.push({ title: 'Miracles', date: '2026-02-17', image:'<img src="beforeandafter.webp" alt="before and after" height="80" width="40" />', message: 'After speaking to Skin 911s team i realized the importance of proper skincare before going to my appointment, After my appointment, I felt much more confident and comfortable with my skin. It was glowier, smoother and im just happy with the results.', created: Date.now() });
+                        items.push({ title: 'Miracles', date: '2026-02-17', message: 'After speaking to Skin 911s team i realized the importance of proper skincare before going to my appointment, After my appointment, I felt much more confident and comfortable with my skin. It was glowier, smoother and im just happy with the results.', created: Date.now() });
                         save(items);
                     }
                 })();
@@ -194,5 +193,6 @@
 </html>
 
    
+
 
 
